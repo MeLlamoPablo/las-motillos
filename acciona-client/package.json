@@ -1,0 +1,38 @@
+{
+  "name": "@las-motillos/acciona-client",
+  "version": "1.2.0",
+  "main": "src/index.ts",
+  "private": true,
+  "scripts": {
+    "check": "tsc",
+    "lint": "yarn prettier --write src/**/*.ts && yarn eslint",
+    "lint:ci": "yarn prettier --check src/**/*.ts && yarn eslint:ci",
+    "eslint": "yarn eslint:ci --fix",
+    "eslint:ci": "eslint src/**/*.ts --max-warnings=0"
+  },
+  "dependencies": {
+    "$": "link:./src",
+    "common-tags": "^1.8.2",
+    "http-status-codes": "^2.2.0",
+    "lodash": "^4.17.21",
+    "node-fetch": "^3.2.10",
+    "query-string": "^7.1.1",
+    "zod": "^3.19.1"
+  },
+  "devDependencies": {
+    "@types/common-tags": "^1",
+    "@types/lodash": "^4",
+    "@types/node": "^18.11.4",
+    "@typescript-eslint/eslint-plugin": "^5.41.0",
+    "@typescript-eslint/parser": "^5.41.0",
+    "@z1digitalstudio/eslint-config-imports": "^1.0.0",
+    "esbuild": "^0.15.12",
+    "esbuild-register": "^3.3.3",
+    "eslint": "^8.28.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.7.1",
+    "typescript": "^4.8.4"
+  }
+}

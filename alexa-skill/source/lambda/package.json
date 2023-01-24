@@ -1,0 +1,43 @@
+{
+  "name": "@las-motillos/alexa-skill",
+  "version": "0",
+  "main": "index.ts",
+  "private": true,
+  "scripts": {
+    "build": "yarn esbuild index.ts --bundle --platform=node --target=node12.22 --outfile=index.js",
+    "check": "tsc",
+    "lint": "yarn prettier --write *.js *.ts && yarn eslint",
+    "lint:ci": "yarn prettier --check *.js *.ts && yarn eslint:ci",
+    "eslint": "yarn eslint:ci --fix",
+    "eslint:ci": "eslint index.ts src/**/*.ts --max-warnings=0"
+  },
+  "dependencies": {
+    "$": "link:./src",
+    "@las-motillos/acciona-client": "*",
+    "ask-sdk-core": "^2.7.0",
+    "ask-sdk-model": "^1.19.0",
+    "aws-sdk": "^2.326.0",
+    "geolib": "^3.3.3",
+    "lodash": "^4.17.21",
+    "node-fetch": "^3.2.10",
+    "query-string": "^7.1.1",
+    "string-similarity": "^4.0.4",
+    "utility-types": "^3.10.0",
+    "zod": "^3.19.1"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4",
+    "@types/node": "^18.11.4",
+    "@types/string-similarity": "^4",
+    "@typescript-eslint/eslint-plugin": "^5.41.0",
+    "@typescript-eslint/parser": "^5.41.0",
+    "@z1digitalstudio/eslint-config-imports": "^1.0.0",
+    "esbuild": "^0.15.12",
+    "eslint": "^8.28.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.7.1",
+    "typescript": "^4.8.4"
+  }
+}

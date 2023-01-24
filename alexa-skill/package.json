@@ -1,0 +1,11 @@
+{
+  "name": "@las-motillos/alexa-skill-deployer",
+  "version": "0",
+  "private": true,
+  "scripts": {
+    "deploy": "./deploy.sh"
+  },
+  "devDependencies": {
+    "ask-cli": "^2.28.0"
+  }
+}

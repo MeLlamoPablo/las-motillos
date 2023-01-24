@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="WEB_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/temp" />
+      <excludeFolder url="file://$MODULE_DIR$/.tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/.yarn" />
+      <excludeFolder url="file://$MODULE_DIR$/acciona-client/build" />
+      <excludeFolder url="file://$MODULE_DIR$/acciona-client/.turbo" />
+      <excludeFolder url="file://$MODULE_DIR$/acciona-login/.turbo" />
+      <excludeFolder url="file://$MODULE_DIR$/localstack/logs" />
+      <excludeFolder url="file://$MODULE_DIR$/link-app-android" />
+      <excludeFolder url="file://$MODULE_DIR$/infra/.terraform" />
+      <excludeFolder url="file://$MODULE_DIR$/infra/.localstack" />
+      <excludeFolder url="file://$MODULE_DIR$/infra/terraform.tfstate.d" />
+      <excludeFolder url="file://$MODULE_DIR$/alexa-skill/source/lambda/.turbo" />
+      <excludeFolder url="file://$MODULE_DIR$/.idea/dataSources" />
+      <excludeFolder url="file://$MODULE_DIR$/alexa-skill/hosted" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

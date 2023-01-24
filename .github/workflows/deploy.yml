@@ -1,0 +1,34 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Read .nvmrc
+        run: echo "nvm=$(cat .nvmrc)" >> "$GITHUB_OUTPUT"
+        id: nvm
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ steps.nvm.outputs.NVMRC }}
+
+      - name: Install dependencies
+        run: yarn install --immutable --immutable-cache
+
+      - name: Build
+        run: yarn go
+
+      - name: Deploy
+        env:
+          ALEXA_ASK_CLI_CONFIG: ${{ secrets.ALEXA_ASK_CLI_CONFIG }}
+          ALEXA_SKILL_ID: ${{ secrets.ALEXA_SKILL_ID }}
+        working-directory: alexa-skill
+        run: yarn deploy

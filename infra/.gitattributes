@@ -1,0 +1,2 @@
+credentials.sh filter=git-crypt diff=git-crypt
+terraform.tfstate.d/production/terraform.tfstate filter=git-crypt diff=git-crypt

@@ -1,0 +1,42 @@
+name: Android
+
+on:
+  push:
+    paths:
+      - '.github/workflows/android.yml'
+      - 'link-app-android/**'
+
+# Needed to release the apk
+# https://github.com/softprops/action-gh-release/issues/236
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: link-app-android
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Cache build artifacts
+        uses: actions/cache@v3
+        with:
+          path: link-app-android/app/build
+          key: ${{ runner.os }}-link-app-artifacts
+
+      - name: Build App
+        run: ./gradlew assembleRelease
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: link-app-android/app/build/outputs/apk/release/app-release.apk

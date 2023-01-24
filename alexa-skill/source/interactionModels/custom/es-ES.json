@@ -1,0 +1,91 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "las motillos",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "ReserveBike",
+          "slots": [
+            {
+              "name": "location",
+              "type": "AMAZON.StreetName",
+              "samples": [
+                "{location}",
+                "Está en {location}",
+                "En el {location}",
+                "En la {location}",
+                "En {location}",
+                "La de {location}",
+                "La de la {location}",
+                "La del {location}",
+                "La que está en {location}",
+                "Reserva la de {location}"
+              ]
+            }
+          ],
+          "samples": [
+            "la moto que está en {location}",
+            "reserva la moto que está en {location}",
+            "la que está en {location}",
+            "reserva la moto en {location}",
+            "reserva la moto de {location}",
+            "la moto en {location}",
+            "la moto de {location}",
+            "la de {location}",
+            "reserva la de {location}"
+          ]
+        }
+      ],
+      "types": []
+    },
+    "dialog": {
+      "intents": [
+        {
+          "name": "ReserveBike",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "location",
+              "type": "AMAZON.StreetName",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.1557861088763.765311206430"
+              }
+            }
+          ]
+        }
+      ],
+      "delegationStrategy": "ALWAYS"
+    },
+    "prompts": [
+      {
+        "id": "Elicit.Slot.1557861088763.765311206430",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "¿Dónde está la moto que quieres reservar?"
+          }
+        ]
+      }
+    ]
+  },
+  "version": "5"
+}

@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Las Motillos Link</string>
+    <string name="error_invalid_credentials">Username or password invalid</string>
+    <string name="error_rate_limited">Too many attempts, please try again later</string>
+    <string name="error_unexpected">Something went wrong, please try again later</string>
+</resources>

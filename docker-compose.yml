@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  localstack:
+    image: localstack/localstack:1.3.0
+    ports:
+      - "127.0.0.1:4566:4566" # LocalStack Gateway
+      - "127.0.0.1:4510-4559:4510-4559" # external services port range
+    environment:
+      - DEBUG=${DEBUG-}
+      - LAMBDA_EXECUTOR=${LAMBDA_EXECUTOR-}
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - "./infra/.localstack:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+  infra:
+    build:
+      context: infra
+    entrypoint: /infra/docker-entrypoint.sh
+    environment:
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_REGION: us-east-1
+      TF_VAR_aws_dynamodb_endpoint: http://localstack:4566
+      TF_VAR_aws_iam_endpoint: http://localstack:4566
+      TF_VAR_aws_sts_endpoint: http://localstack:4566
+    volumes:
+      - "./infra:/infra"
+      - "/infra/.terraform" # Don't share the terraform environment with the host, so it is always 'local'.
