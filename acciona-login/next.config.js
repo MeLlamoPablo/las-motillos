@@ -3,11 +3,9 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  experimental: {
-    transpilePackages: ["@las-motillos/acciona-client"],
-  },
   reactStrictMode: true,
   swcMinify: true,
+  transpilePackages: ["@las-motillos/acciona-client"],
 };
 
 module.exports = nextConfig;

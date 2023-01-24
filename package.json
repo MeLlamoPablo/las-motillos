@@ -11,8 +11,8 @@
     "go": "turbo run build check lint"
   },
   "devDependencies": {
-    "@types/node": "^18.11.9",
-    "turbo": "^1.6.2"
+    "@types/node": "^18.11.18",
+    "turbo": "^1.7.0"
   },
   "dependencies": {
     "@aws-sdk/credential-provider-process": "^3.226.0"
