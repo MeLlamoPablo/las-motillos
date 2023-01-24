@@ -1,122 +1,51 @@
-import { getRecaptchaSiteKey } from "@las-motillos/acciona-client";
-import { useState } from "react";
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { StatusCodes } from "http-status-codes";
-
-import { CompleteLoginForm } from "$components/CompleteLoginForm";
-import { StartLoginForm } from "$components/StartLoginForm";
-import styled from "styled-components";
-import { parse, stringify } from "query-string";
-
-async function startLogin(payload: {
-  email: string;
-  password: string;
-  recaptchaToken: string;
-}): Promise<VerificationInfo> {
-  const response = await fetch("/api/start-login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  });
-
-  if (response.status === StatusCodes.OK) {
-    return await response.json();
-  }
-
-  throw new Error("Login failed");
-}
-
-async function completeLogin(payload: {
-  code: string;
-  sessionInfo: string;
-}): Promise<{ code: string }> {
-  const response = await fetch("/api/complete-login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  });
-
-  if (response.status === StatusCodes.OK) {
-    return await response.json();
-  }
-
-  throw new Error("Login failed");
-}
-
-type VerificationInfo = {
-  maskedPhoneNumber: string;
-  sessionInfo: string;
-};
-
-const Main = styled.main`
-  width: 100%;
-  height: 100%;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
+import fetch from "node-fetch";
+import {z} from "zod"
 
 export default function Home({
-  recaptchaSiteKey,
+  appUrl,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const [verificationInfo, setVerificationInfo] =
-    useState<VerificationInfo | null>(null);
-
   return (
-    <Main>
-      {verificationInfo ? (
-        <CompleteLoginForm
-          onComplete={({ code }) => {
-            const { redirect_uri, state } = parse(window.location.search);
-
-            if (typeof redirect_uri !== "string" || typeof state !== "string") {
-              return;
-            }
-
-            completeLogin({
-              code,
-              sessionInfo: verificationInfo.sessionInfo,
-            })
-              .then(({ code }) => {
-                window.location.href =
-                  redirect_uri +
-                  "?" +
-                  stringify({
-                    code,
-                    state,
-                  });
-              })
-              .catch(console.error);
-          }}
-          maskedPhoneNumber={verificationInfo.maskedPhoneNumber}
-        />
-      ) : (
-        <StartLoginForm
-          onLogin={({ email, password, recaptchaToken }) => {
-            startLogin({
-              email,
-              password,
-              recaptchaToken,
-            })
-              .then(setVerificationInfo)
-              .catch(console.error);
-          }}
-          recaptchaSiteKey={recaptchaSiteKey}
-        />
-      )}
-    </Main>
+    <main>
+      <ol>
+        <li><a href={appUrl}>Download the link app for Android</a>.</li>
+        <li>Go to the "Las Motillos" skill on your Alexa app on Android.</li>
+        <li>Enable the skill and login on the link app.</li>
+      </ol>
+    </main>
   );
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
+  const response = await fetch("https://api.github.com/repos/MeLlamoPablo/las-motillos/releases/latest");
+  const ResponseZ = z.object({
+    assets: z.array(
+      z.object({
+        name: z.string(),
+        browser_download_url: z.string(),
+      }),
+    )
+  });
+
+  const parsed = ResponseZ.safeParse(await response.json())
+
+  if (!parsed.success) {
+    return {
+      notFound: true,
+    }
+  }
+
+  const asset = parsed.data.assets.find(asset => asset.name === "app-release.apk");
+
+  if (!asset) {
+    return {
+      notFound: true,
+    }
+  }
+
   return {
     props: {
-      recaptchaSiteKey: await getRecaptchaSiteKey(),
+      appUrl: asset.browser_download_url,
     },
   };
 };

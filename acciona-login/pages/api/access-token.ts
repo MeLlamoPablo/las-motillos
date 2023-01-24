@@ -41,7 +41,7 @@ export default async function getAccessToken(
     return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({});
   }
 
-  if (!isClientAuthenticated(req.headers.authorization)) {
+  if (!(await isClientAuthenticated(req.headers.authorization))) {
     return res.status(StatusCodes.UNAUTHORIZED).json({});
   }
 
