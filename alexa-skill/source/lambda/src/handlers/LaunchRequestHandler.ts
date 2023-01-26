@@ -202,10 +202,14 @@ async function getUserRegion({
   acciona: AuthenticatedAccionaClient;
   userLocation: { lat: number; lon: number };
 }) {
+  console.time("Perf: LaunchRequest > getUserRegion > getRegions");
   const regions = await acciona.getRegions();
+  console.timeEnd("Perf: LaunchRequest > getUserRegion > getRegions");
+  console.time("Perf: LaunchRequest > getUserRegion > find region");
   const region = regions.find((region) =>
     isPointInPolygon(userLocation, region.bounding_box)
   );
+  console.timeEnd("Perf: LaunchRequest > getUserRegion > find region");
 
   return { allRegions: regions, region };
 }
@@ -227,7 +231,11 @@ async function getBestBikes({
 
   console.timeEnd("Perf: LaunchRequest > getBestBikes > getFleet");
 
+  console.time("Perf: LaunchRequest > getBestBikes > sortByDistance");
+
   const sorted = sortedByDistance(fleet, userLocation);
+
+  console.timeEnd("Perf: LaunchRequest > getBestBikes > sortByDistance");
 
   const filtered = sorted.filter((bike) => bike.battery_level > 40);
 
