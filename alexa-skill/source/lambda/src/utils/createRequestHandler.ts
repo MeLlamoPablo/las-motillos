@@ -83,10 +83,13 @@ export function createRequestHandler(
         })
         .parse(JSON.parse(accionaSessionString));
 
-      return params.handle({
+      console.time("Perf: " + params.requestType)
+      const r = await params.handle({
         ...input,
         acciona: getAuthenticatedAccionaClient(accionaSession),
       });
+      console.timeEnd("Perf: " + params.requestType)
+      return r
     },
   };
 }
