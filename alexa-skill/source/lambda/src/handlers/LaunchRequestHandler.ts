@@ -22,14 +22,10 @@ export const LaunchRequestHandler = createRequestHandler({
     serviceClientFactory,
   }) {
     try {
-      console.time("Perf: LaunchRequest > getUserPosition");
-
       const userLocation = await getUserPosition({
         requestEnvelope,
         serviceClientFactory,
       });
-
-      console.timeEnd("Perf: LaunchRequest > getUserPosition");
 
       if (!userLocation) {
         return responseBuilder
@@ -40,14 +36,10 @@ export const LaunchRequestHandler = createRequestHandler({
           .getResponse();
       }
 
-      console.time("Perf: LaunchRequest > getUserRegion");
-
       const { allRegions, region } = await getUserRegion({
         acciona,
         userLocation,
       });
-
-      console.timeEnd("Perf: LaunchRequest > getUserRegion");
 
       if (!region) {
         const regionNames = allRegions.map((region) => region.name);
@@ -69,15 +61,11 @@ export const LaunchRequestHandler = createRequestHandler({
           .getResponse();
       }
 
-      console.time("Perf: LaunchRequest > getBestBikes");
-
       const bikes = await getBestBikes({
         acciona,
         userLocation,
         userRegionId: region.id,
       });
-
-      console.timeEnd("Perf: LaunchRequest > getBestBikes");
 
       if (bikes.length === 0) {
         return responseBuilder
@@ -158,11 +146,9 @@ async function getUserPosition({
 
   try {
     const client = serviceClientFactory?.getDeviceAddressServiceClient();
-    console.time("Perf: LaunchRequest > getUserPosition > getFullAddress");
     const address = await client?.getFullAddress(
       requestEnvelope.context.System.device?.deviceId ?? ""
     );
-    console.timeEnd("Perf: LaunchRequest > getUserPosition > getFullAddress");
 
     if (!address) {
       return null;
@@ -186,10 +172,7 @@ async function getUserPosition({
       addressString += `, ${address.city}`;
     }
 
-    console.time("Perf: LaunchRequest > getUserPosition > geocode");
-    const r = await geocode(addressString);
-    console.timeEnd("Perf: LaunchRequest > getUserPosition > geocode");
-    return r;
+    return await geocode(addressString);
   } catch (e) {
     return null;
   }
@@ -202,14 +185,10 @@ async function getUserRegion({
   acciona: AuthenticatedAccionaClient;
   userLocation: { lat: number; lon: number };
 }) {
-  console.time("Perf: LaunchRequest > getUserRegion > getRegions");
   const regions = await acciona.getRegions();
-  console.timeEnd("Perf: LaunchRequest > getUserRegion > getRegions");
-  console.time("Perf: LaunchRequest > getUserRegion > find region");
   const region = regions.find((region) =>
     isPointInPolygon(userLocation, region.bounding_box)
   );
-  console.timeEnd("Perf: LaunchRequest > getUserRegion > find region");
 
   return { allRegions: regions, region };
 }
@@ -223,41 +202,15 @@ async function getBestBikes({
   userLocation: { lat: number; lon: number };
   userRegionId: number;
 }): Promise<BikeWithLocation[]> {
-  console.time("Perf: LaunchRequest > getBestBikes > getFleet");
-
   const fleet = await acciona.getFleet({
     regionId: userRegionId,
   });
 
-  console.timeEnd("Perf: LaunchRequest > getBestBikes > getFleet");
-
-  console.time("Perf: LaunchRequest > getBestBikes > sortByDistance");
-
   const sorted = sortedByDistance(fleet, userLocation);
-
-  console.timeEnd("Perf: LaunchRequest > getBestBikes > sortByDistance");
-
   const filtered = sorted.filter((bike) => bike.battery_level > 40);
 
-  console.time(
-    "Perf: LaunchRequest > getBestBikes > getLocationInfoForBike(s)"
-  );
-
   const bikesWithLocationInfo = await Promise.all(
-    filtered.slice(0, 6).map(async (bike, i) => {
-      console.time(
-        `Perf: LaunchRequest > getBestBikes > getLocationInfoForBike #${i}`
-      );
-      const r = await getLocationInfoForBike(bike);
-      console.timeEnd(
-        `Perf: LaunchRequest > getBestBikes > getLocationInfoForBike #${i}`
-      );
-      return r;
-    })
-  );
-
-  console.timeEnd(
-    "Perf: LaunchRequest > getBestBikes > getLocationInfoForBike(s)"
+    filtered.slice(0, 6).map(getLocationInfoForBike)
   );
 
   // Filter out duplicate bikes in the same street

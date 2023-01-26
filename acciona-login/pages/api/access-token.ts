@@ -37,19 +37,13 @@ export default async function getAccessToken(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.time("Perf: getAccessToken")
-
   if (req.method !== "POST") {
     return res.status(StatusCodes.METHOD_NOT_ALLOWED).json({});
   }
 
-  console.time("Perf: getAccessToken > isClientAuthenticated")
-
   if (!(await isClientAuthenticated(req.headers.authorization))) {
-    console.timeEnd("Perf: getAccessToken > isClientAuthenticated")
     return res.status(StatusCodes.UNAUTHORIZED).json({});
   }
-  console.timeEnd("Perf: getAccessToken > isClientAuthenticated")
 
   const payload = PayloadZ.safeParse(req.body);
 
@@ -63,9 +57,7 @@ export default async function getAccessToken(
 
   switch (payload.data.grant_type) {
     case "authorization_code": {
-      console.time("Perf: getAccessToken > readRefreshToken")
       const result = await readRefreshToken(payload.data.code);
-      console.timeEnd("Perf: getAccessToken > readRefreshToken")
 
       if (!result) {
         return res.status(StatusCodes.UNAUTHORIZED).json({});
@@ -80,15 +72,11 @@ export default async function getAccessToken(
     }
   }
 
-  console.time("Perf: getAccessToken > createAuthenticatedSession")
   const { firebaseRefreshToken, ...session } = await createAuthenticatedSession(
     {
       refreshToken,
     }
   );
-  console.timeEnd("Perf: getAccessToken > createAuthenticatedSession")
-
-  console.timeEnd("Perf: getAccessToken")
 
   return res
     .status(StatusCodes.OK)

@@ -124,26 +124,8 @@ export async function createPublicSession(): Promise<PublicSession> {
       expiresAt: accionaPublicUuidExpiresAt,
     },
   ] = await Promise.all([
-    (async () => {
-      console.time(
-        "Perf: createPublicSession > generateAccionaPublicJwtAccessToken"
-      );
-      const res = await generateAccionaPublicJwtAccessToken();
-      console.timeEnd(
-        "Perf: createPublicSession > generateAccionaPublicJwtAccessToken"
-      );
-      return res;
-    })(),
-    (async () => {
-      console.time(
-        "Perf: createPublicSession > generateAccionaPublicUuidAccessToken"
-      );
-      const res = await generateAccionaPublicUuidAccessToken();
-      console.timeEnd(
-        "Perf: createPublicSession > generateAccionaPublicUuidAccessToken"
-      );
-      return res;
-    })(),
+    generateAccionaPublicJwtAccessToken(),
+    generateAccionaPublicUuidAccessToken(),
   ]);
 
   return {
@@ -166,24 +148,10 @@ export async function createAuthenticatedSession({
       expiresAt: firebaseExpiresAt,
     },
   ] = await Promise.all([
-    (async () => {
-      console.time("Perf: createAuthenticatedSession > createPublicSession");
-      const res = await createPublicSession();
-      console.timeEnd("Perf: createAuthenticatedSession > createPublicSession");
-      return res;
-    })(),
-    (async () => {
-      console.time(
-        "Perf: createAuthenticatedSession > generateFirebaseSession"
-      );
-      const res = await generateFirebaseSession({
-        refreshToken,
-      });
-      console.timeEnd(
-        "Perf: createAuthenticatedSession > generateFirebaseSession"
-      );
-      return res;
-    })(),
+    createPublicSession(),
+    generateFirebaseSession({
+      refreshToken,
+    }),
   ]);
 
   return {
