@@ -1149,9 +1149,11 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.49.0
     "@typescript-eslint/parser": ^5.49.0
     "@z1digitalstudio/eslint-config-imports": ^1.0.0
-    ask-sdk-core: ^2.7.0
-    ask-sdk-model: ^1.19.0
-    aws-sdk: ^2.326.0
+    ask-sdk-core: ^2.12.1
+    ask-sdk-dynamodb-persistence-adapter: ^2.12.1
+    ask-sdk-model: ^1.44.0
+    aws-sdk: ^2.1302.0
+    date-fns: ^2.29.3
     esbuild: ^0.17.4
     eslint: ^8.32.0
     eslint-config-prettier: ^8.6.0
@@ -1963,7 +1965,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ask-sdk-core@npm:^2.7.0":
+"ask-sdk-core@npm:^2.12.1":
   version: 2.12.1
   resolution: "ask-sdk-core@npm:2.12.1"
   dependencies:
@@ -1974,6 +1976,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ask-sdk-dynamodb-persistence-adapter@npm:^2.12.1":
+  version: 2.12.1
+  resolution: "ask-sdk-dynamodb-persistence-adapter@npm:2.12.1"
+  dependencies:
+    aws-sdk: ^2.163.0
+  peerDependencies:
+    ask-sdk-core: ^2.0.0
+  checksum: f72a0b849dd04c088a7a7b9e5f80f3d4f2db9a6ff59a255ed9671364a8b5ba58ba622223bedf969b43b69500dfed047a18a8e2c0c35b472996796c47ee8ac82c
+  languageName: node
+  linkType: hard
+
 "ask-sdk-model-runtime@npm:^1.1.0":
   version: 1.4.0
   resolution: "ask-sdk-model-runtime@npm:1.4.0"
@@ -1981,10 +1994,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ask-sdk-model@npm:^1.19.0":
-  version: 1.39.0
-  resolution: "ask-sdk-model@npm:1.39.0"
-  checksum: 48c07cceb81fac5a30870be3382f988e6b43e028eb1fc0b2784d237d9ca5fd192825b3e4f0e3a476714b89256400753f1afcb3aa075a99164a6e1a440b455ca1
+"ask-sdk-model@npm:^1.44.0":
+  version: 1.44.0
+  resolution: "ask-sdk-model@npm:1.44.0"
+  checksum: d02814d076d7e8152b82dac55d6b8d64822eea19d2a2ce0476887b0d0620688f61f8e36c2f94d4075621f7ac250e0986e17b343493a448604c83c439d0b96fd5
   languageName: node
   linkType: hard
 
@@ -2068,6 +2081,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"aws-sdk@npm:^2.1302.0, aws-sdk@npm:^2.163.0":
+  version: 2.1302.0
+  resolution: "aws-sdk@npm:2.1302.0"
+  dependencies:
+    buffer: 4.9.2
+    events: 1.1.1
+    ieee754: 1.1.13
+    jmespath: 0.16.0
+    querystring: 0.2.0
+    sax: 1.2.1
+    url: 0.10.3
+    util: ^0.12.4
+    uuid: 8.0.0
+    xml2js: 0.4.19
+  checksum: cdbf35d77d87d179cd27b63b24e2a30a818f6c99e8179c1b87d8f03c9ea62efbbc76362a8df45f156f1543cc1cc871cb31e9193cfe7376ace487bf11c53672f7
+  languageName: node
+  linkType: hard
+
 "aws-sdk@npm:^2.288.0":
   version: 2.1280.0
   resolution: "aws-sdk@npm:2.1280.0"
@@ -2083,24 +2114,6 @@ __metadata:
     uuid: 8.0.0
     xml2js: 0.4.19
   checksum: 57d070a09275c8ba2375d74252947a20ce74eca90724c04f232feacd78109bdeb07c4bfc211dc90eec891b5dc3697cbb17fef027af2284633dbe4cfcb724d6ab
-  languageName: node
-  linkType: hard
-
-"aws-sdk@npm:^2.326.0":
-  version: 2.1238.0
-  resolution: "aws-sdk@npm:2.1238.0"
-  dependencies:
-    buffer: 4.9.2
-    events: 1.1.1
-    ieee754: 1.1.13
-    jmespath: 0.16.0
-    querystring: 0.2.0
-    sax: 1.2.1
-    url: 0.10.3
-    util: ^0.12.4
-    uuid: 8.0.0
-    xml2js: 0.4.19
-  checksum: 428750039b886c4bf7fdf0aa5a8848f630ee43c985d6128cbb68c0366fc24171aaed3de2c7fbed6d211c9b9fafa01725a03781683b4bc8ce451aab01725aae80
   languageName: node
   linkType: hard
 

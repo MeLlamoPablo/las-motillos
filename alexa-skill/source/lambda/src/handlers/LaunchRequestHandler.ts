@@ -1,8 +1,12 @@
 import type {
   AuthenticatedAccionaClient,
+  Region,
   Vehicle,
 } from "@las-motillos/acciona-client";
+import type { AttributesManager } from "ask-sdk-core";
 import type { RequestEnvelope, services } from "ask-sdk-model";
+import { isPast } from "date-fns";
+import addDays from "date-fns/addDays";
 import { isPointInPolygon } from "geolib";
 import { last, uniqBy } from "lodash";
 
@@ -44,6 +48,7 @@ export const LaunchRequestHandler = createRequestHandler({
 
       const { allRegions, region } = await getUserRegion({
         acciona,
+        attributesManager,
         userLocation,
       });
 
@@ -197,14 +202,42 @@ async function getUserPosition({
 
 async function getUserRegion({
   acciona,
+  attributesManager,
   userLocation,
 }: {
   acciona: AuthenticatedAccionaClient;
+  attributesManager: AttributesManager;
   userLocation: { lat: number; lon: number };
 }) {
-  console.time("Perf: LaunchRequest > getUserRegion > getRegions");
-  const regions = await acciona.getRegions();
-  console.timeEnd("Perf: LaunchRequest > getUserRegion > getRegions");
+  let regions: Region[];
+
+  console.time("Perf: LaunchRequest > getUserRegion > getCachedRegions");
+  const cachedRegions = await getCachedRegions({ attributesManager });
+  console.timeEnd("Perf: LaunchRequest > getUserRegion > getCachedRegions");
+
+  if (cachedRegions) {
+    console.log("Cache hit! -> regions");
+    regions = cachedRegions;
+  } else {
+    console.log("Cache miss! -> regions");
+    console.time("Perf: LaunchRequest > getUserRegion > getRegions");
+    regions = await acciona.getRegions();
+    attributesManager.setPersistentAttributes({
+      cachedRegions: {
+        updatedAt: Date.now(),
+        value: regions,
+      },
+    } satisfies PersistentAttributes);
+    console.timeEnd("Perf: LaunchRequest > getUserRegion > getRegions");
+    console.time(
+      "Perf: LaunchRequest > getUserRegion > savePersistentAttributes"
+    );
+    await attributesManager.savePersistentAttributes();
+    console.timeEnd(
+      "Perf: LaunchRequest > getUserRegion > savePersistentAttributes"
+    );
+  }
+
   console.time("Perf: LaunchRequest > getUserRegion > find region");
   const region = regions.find((region) =>
     isPointInPolygon(userLocation, region.bounding_box)
@@ -212,6 +245,36 @@ async function getUserRegion({
   console.timeEnd("Perf: LaunchRequest > getUserRegion > find region");
 
   return { allRegions: regions, region };
+}
+
+type PersistentAttributes = {
+  cachedRegions:
+    | {
+        updatedAt: number;
+        value: Region[];
+      }
+    | undefined;
+};
+
+async function getCachedRegions({
+  attributesManager,
+}: {
+  attributesManager: AttributesManager;
+}) {
+  const persistentAttributes =
+    (await attributesManager.getPersistentAttributes()) as PersistentAttributes;
+
+  if (!persistentAttributes?.cachedRegions) {
+    return undefined;
+  }
+
+  const expiresAt = addDays(persistentAttributes.cachedRegions.updatedAt, 7);
+
+  if (isPast(expiresAt)) {
+    return undefined;
+  }
+
+  return persistentAttributes.cachedRegions.value;
 }
 
 async function getBestBikes({

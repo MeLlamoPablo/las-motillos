@@ -15,3 +15,5 @@ export const RegionZ = z.object({
   vehicle_type: z.array(z.string()),
   vehicle_models: z.array(z.string()),
 });
+
+export type Region = z.infer<typeof RegionZ>;
