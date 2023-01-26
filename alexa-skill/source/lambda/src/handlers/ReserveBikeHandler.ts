@@ -1,6 +1,6 @@
-import {findBestMatch} from "string-similarity"
+import { findBestMatch } from "string-similarity";
 
-import type {BikeWithLocation} from "$/types/BikeWithLocation"
+import type { BikeWithLocation } from "$/types/BikeWithLocation";
 import { createRequestHandler } from "$/utils/createRequestHandler";
 
 export const ReserveBikeHandler = createRequestHandler({
@@ -85,9 +85,9 @@ function getBikeSelectedByUser({
   const { bestMatch, bestMatchIndex } = findBestMatch(
     spokenLocation.toLowerCase().trim(),
     bikes.map(({ road }) => road.toLowerCase().trim())
-  )
+  );
 
-  if (bestMatch.rating < 0.50) {
+  if (bestMatch.rating < 0.5) {
     return null;
   }
 

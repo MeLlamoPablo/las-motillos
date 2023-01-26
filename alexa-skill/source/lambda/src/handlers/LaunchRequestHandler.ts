@@ -1,13 +1,16 @@
-import type {AuthenticatedAccionaClient, Vehicle} from "@las-motillos/acciona-client"
-import type {RequestEnvelope, services} from "ask-sdk-model"
-import {isPointInPolygon} from "geolib"
-import {last, uniqBy} from "lodash"
+import type {
+  AuthenticatedAccionaClient,
+  Vehicle,
+} from "@las-motillos/acciona-client";
+import type { RequestEnvelope, services } from "ask-sdk-model";
+import { isPointInPolygon } from "geolib";
+import { last, uniqBy } from "lodash";
 
-import type {BikeWithLocation} from "$/types/BikeWithLocation"
-import {createRequestHandler} from "$/utils/createRequestHandler"
-import {geocode} from "$/utils/geocode"
-import {reverseGeocode} from "$/utils/reverseGeocode"
-import {sortedByDistance} from "$/utils/sortedByDistance"
+import type { BikeWithLocation } from "$/types/BikeWithLocation";
+import { createRequestHandler } from "$/utils/createRequestHandler";
+import { geocode } from "$/utils/geocode";
+import { reverseGeocode } from "$/utils/reverseGeocode";
+import { sortedByDistance } from "$/utils/sortedByDistance";
 
 export const LaunchRequestHandler = createRequestHandler({
   requestType: "LaunchRequest",
@@ -19,14 +22,14 @@ export const LaunchRequestHandler = createRequestHandler({
     serviceClientFactory,
   }) {
     try {
-      console.time("Perf: LaunchRequest > getUserPosition")
+      console.time("Perf: LaunchRequest > getUserPosition");
 
       const userLocation = await getUserPosition({
         requestEnvelope,
         serviceClientFactory,
       });
 
-      console.timeEnd("Perf: LaunchRequest > getUserPosition")
+      console.timeEnd("Perf: LaunchRequest > getUserPosition");
 
       if (!userLocation) {
         return responseBuilder
@@ -37,15 +40,14 @@ export const LaunchRequestHandler = createRequestHandler({
           .getResponse();
       }
 
-      console.time("Perf: LaunchRequest > getUserRegion")
+      console.time("Perf: LaunchRequest > getUserRegion");
 
       const { allRegions, region } = await getUserRegion({
         acciona,
         userLocation,
       });
 
-      console.timeEnd("Perf: LaunchRequest > getUserRegion")
-
+      console.timeEnd("Perf: LaunchRequest > getUserRegion");
 
       if (!region) {
         const regionNames = allRegions.map((region) => region.name);
@@ -67,7 +69,7 @@ export const LaunchRequestHandler = createRequestHandler({
           .getResponse();
       }
 
-      console.time("Perf: LaunchRequest > getBestBikes")
+      console.time("Perf: LaunchRequest > getBestBikes");
 
       const bikes = await getBestBikes({
         acciona,
@@ -75,7 +77,7 @@ export const LaunchRequestHandler = createRequestHandler({
         userRegionId: region.id,
       });
 
-      console.timeEnd("Perf: LaunchRequest > getBestBikes")
+      console.timeEnd("Perf: LaunchRequest > getBestBikes");
 
       if (bikes.length === 0) {
         return responseBuilder
@@ -156,11 +158,11 @@ async function getUserPosition({
 
   try {
     const client = serviceClientFactory?.getDeviceAddressServiceClient();
-    console.time("Perf: LaunchRequest > getUserPosition > getFullAddress")
+    console.time("Perf: LaunchRequest > getUserPosition > getFullAddress");
     const address = await client?.getFullAddress(
       requestEnvelope.context.System.device?.deviceId ?? ""
     );
-    console.timeEnd("Perf: LaunchRequest > getUserPosition > getFullAddress")
+    console.timeEnd("Perf: LaunchRequest > getUserPosition > getFullAddress");
 
     if (!address) {
       return null;
@@ -184,9 +186,9 @@ async function getUserPosition({
       addressString += `, ${address.city}`;
     }
 
-    console.time("Perf: LaunchRequest > getUserPosition > geocode")
+    console.time("Perf: LaunchRequest > getUserPosition > geocode");
     const r = await geocode(addressString);
-    console.timeEnd("Perf: LaunchRequest > getUserPosition > geocode")
+    console.timeEnd("Perf: LaunchRequest > getUserPosition > geocode");
     return r;
   } catch (e) {
     return null;
@@ -217,53 +219,61 @@ async function getBestBikes({
   userLocation: { lat: number; lon: number };
   userRegionId: number;
 }): Promise<BikeWithLocation[]> {
-  console.time("Perf: LaunchRequest > getBestBikes > getFleet")
+  console.time("Perf: LaunchRequest > getBestBikes > getFleet");
 
   const fleet = await acciona.getFleet({
     regionId: userRegionId,
   });
 
-  console.timeEnd("Perf: LaunchRequest > getBestBikes > getFleet")
+  console.timeEnd("Perf: LaunchRequest > getBestBikes > getFleet");
 
   const sorted = sortedByDistance(fleet, userLocation);
 
   const filtered = sorted.filter((bike) => bike.battery_level > 40);
 
-  console.time("Perf: LaunchRequest > getBestBikes > getLocationInfoForBike(s)")
+  console.time(
+    "Perf: LaunchRequest > getBestBikes > getLocationInfoForBike(s)"
+  );
 
   const bikesWithLocationInfo = await Promise.all(
     filtered.slice(0, 6).map(async (bike, i) => {
-      console.time(`Perf: LaunchRequest > getBestBikes > getLocationInfoForBike #${i}`)
-      const r = await getLocationInfoForBike(bike)
-      console.timeEnd(`Perf: LaunchRequest > getBestBikes > getLocationInfoForBike #${i}`)
-      return r
+      console.time(
+        `Perf: LaunchRequest > getBestBikes > getLocationInfoForBike #${i}`
+      );
+      const r = await getLocationInfoForBike(bike);
+      console.timeEnd(
+        `Perf: LaunchRequest > getBestBikes > getLocationInfoForBike #${i}`
+      );
+      return r;
     })
   );
 
-  console.timeEnd("Perf: LaunchRequest > getBestBikes > getLocationInfoForBike(s)")
+  console.timeEnd(
+    "Perf: LaunchRequest > getBestBikes > getLocationInfoForBike(s)"
+  );
 
   // Filter out duplicate bikes in the same street
   // We want to give the user a useful variety of options. Two bikes close to
   // each other is not useful. Better filter out the second and leave room for
   // a third in another street.
   return uniqBy(
-    bikesWithLocationInfo.flatMap(({ bike, locationInfo }) => {
-      if (locationInfo.address.road) {
-        return { bike, road: locationInfo.address.road };
-      }
-
-      return [];
-    }),
+    bikesWithLocationInfo.filter((it): it is NonNullable<typeof it> => !!it),
     ({ road }) => road
   ).slice(0, 3);
 }
 
 async function getLocationInfoForBike(bike: Vehicle) {
+  const { road } = await reverseGeocode({
+    lat: bike.position.lat,
+    lon: bike.position.lng,
+  });
+
+  if (!road) {
+    return undefined;
+  }
+
   return {
     bike,
-    locationInfo: await reverseGeocode({
-      lat: bike.position.lat,
-      lon: bike.position.lng,
-    }),
+    road,
   };
 }
