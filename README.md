@@ -4,6 +4,8 @@ Las Motillos is an Alexa skill that allows interacting with
 [Acciona Mobility][Acciona]. Users can ask Alexa where the nearest motorbikes
 are and to make a reservation for them.
 
+https://user-images.githubusercontent.com/11708035/214916543-ded97855-1d8a-4b9a-8b55-5b0077e09754.mp4
+
 The skill is not published because Acciona doesn't support OAuth. Thus, it isn't
 possible to securely delegate access to your Acciona account to the Las Motillos
 skill. Instead, authentication works by calling reverse engineered endpoints
