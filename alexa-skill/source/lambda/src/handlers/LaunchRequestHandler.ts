@@ -232,7 +232,12 @@ async function getBestBikes({
   console.time("Perf: LaunchRequest > getBestBikes > getLocationInfoForBike(s)")
 
   const bikesWithLocationInfo = await Promise.all(
-    filtered.slice(0, 6).map(getLocationInfoForBike)
+    filtered.slice(0, 6).map(async (bike, i) => {
+      console.time(`Perf: LaunchRequest > getBestBikes > getLocationInfoForBike #${i}`)
+      const r = await getLocationInfoForBike(bike)
+      console.timeEnd(`Perf: LaunchRequest > getBestBikes > getLocationInfoForBike #${i}`)
+      return r
+    })
   );
 
   console.timeEnd("Perf: LaunchRequest > getBestBikes > getLocationInfoForBike(s)")
