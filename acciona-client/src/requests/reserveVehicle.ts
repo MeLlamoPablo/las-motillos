@@ -32,6 +32,7 @@ export function reserveVehicle(session: AuthenticatedSession) {
           authorization: `Bearer ${session.accionaPublicUuidAccessToken}`,
           "x-authorization": `Bearer ${session.firebaseAccessToken}`,
           "Content-Type": "application/json",
+          "User-Agent": "https://github.com/MeLlamoPablo/las-motillos",
         },
         body: JSON.stringify({ position: userPosition, vehicle_id: vehicleId }),
       }

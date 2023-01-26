@@ -13,7 +13,7 @@ export function getRegions(session: PublicSession) {
     const response = await fetch("https://api.accionamobility.com/v2/region", {
       headers: {
         authorization: `Bearer ${session.accionaPublicJwtAccessToken}`,
-        "user-agent": "motit/1.35.0 android/23",
+        "User-Agent": "https://github.com/MeLlamoPablo/las-motillos",
         accept: "application/json",
       },
     });

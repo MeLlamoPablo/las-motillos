@@ -64,6 +64,7 @@ async function generateAccionaPublicJwtAccessToken() {
       headers: {
         Authorization: `Basic ${authString}`,
         "Content-Type": "application/x-www-form-urlencoded",
+        "User-Agent": "https://github.com/MeLlamoPablo/las-motillos",
       },
       body: new URLSearchParams({
         grant_type: "client_credentials",
@@ -95,6 +96,7 @@ async function generateAccionaPublicUuidAccessToken() {
     headers: {
       Authorization: `Basic ${authString}`,
       "Content-Type": "application/x-www-form-urlencoded",
+      "User-Agent": "https://github.com/MeLlamoPablo/las-motillos",
     },
     body: new URLSearchParams({
       grant_type: "client_credentials",

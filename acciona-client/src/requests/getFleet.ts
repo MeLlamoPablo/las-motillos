@@ -15,6 +15,7 @@ export function getFleet(session: PublicSession) {
       {
         headers: {
           authorization: `Bearer ${session.accionaPublicUuidAccessToken}`,
+          "User-Agent": "https://github.com/MeLlamoPablo/las-motillos",
         },
       }
     );

@@ -8,6 +8,7 @@ export function getUser(session: AuthenticatedSession) {
     const response = await fetch("https://api.accionamobility.com/v1/user", {
       headers: {
         authorization: `Bearer ${session.accionaPublicUuidAccessToken}`,
+        "User-Agent": "https://github.com/MeLlamoPablo/las-motillos",
         "X-Authorization": session.firebaseAccessToken,
       },
     });
