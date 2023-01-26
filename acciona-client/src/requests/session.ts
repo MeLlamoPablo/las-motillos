@@ -15,15 +15,15 @@ const generateFirebaseAccessTokenZ = z.object({
 });
 
 async function generateFirebaseSession({
-                                         refreshToken,
-                                       }: {
+  refreshToken,
+}: {
   refreshToken: string;
 }) {
   const response = await fetch(
     oneLine`
       https://securetoken.googleapis.com/v1/token?${stringify({
-      key: FIREBASE_API_KEY,
-    })}
+        key: FIREBASE_API_KEY,
+      })}
     `,
     {
       method: "POST",
@@ -125,15 +125,23 @@ export async function createPublicSession(): Promise<PublicSession> {
     },
   ] = await Promise.all([
     (async () => {
-      console.time("Perf: createPublicSession > generateAccionaPublicJwtAccessToken")
+      console.time(
+        "Perf: createPublicSession > generateAccionaPublicJwtAccessToken"
+      );
       const res = await generateAccionaPublicJwtAccessToken();
-      console.timeEnd("Perf: createPublicSession > generateAccionaPublicJwtAccessToken")
+      console.timeEnd(
+        "Perf: createPublicSession > generateAccionaPublicJwtAccessToken"
+      );
       return res;
     })(),
     (async () => {
-      console.time("Perf: createPublicSession > generateAccionaPublicUuidAccessToken")
+      console.time(
+        "Perf: createPublicSession > generateAccionaPublicUuidAccessToken"
+      );
       const res = await generateAccionaPublicUuidAccessToken();
-      console.timeEnd("Perf: createPublicSession > generateAccionaPublicUuidAccessToken")
+      console.timeEnd(
+        "Perf: createPublicSession > generateAccionaPublicUuidAccessToken"
+      );
       return res;
     })(),
   ]);
@@ -146,8 +154,8 @@ export async function createPublicSession(): Promise<PublicSession> {
 }
 
 export async function createAuthenticatedSession({
-                                                   refreshToken,
-                                                 }: {
+  refreshToken,
+}: {
   refreshToken: string;
 }): Promise<AuthenticatedSession & { firebaseRefreshToken: string }> {
   const [
@@ -159,17 +167,21 @@ export async function createAuthenticatedSession({
     },
   ] = await Promise.all([
     (async () => {
-      console.time("Perf: createAuthenticatedSession > createPublicSession")
+      console.time("Perf: createAuthenticatedSession > createPublicSession");
       const res = await createPublicSession();
-      console.timeEnd("Perf: createAuthenticatedSession > createPublicSession")
+      console.timeEnd("Perf: createAuthenticatedSession > createPublicSession");
       return res;
     })(),
     (async () => {
-      console.time("Perf: createAuthenticatedSession > generateFirebaseSession")
+      console.time(
+        "Perf: createAuthenticatedSession > generateFirebaseSession"
+      );
       const res = await generateFirebaseSession({
         refreshToken,
       });
-      console.timeEnd("Perf: createAuthenticatedSession > generateFirebaseSession")
+      console.timeEnd(
+        "Perf: createAuthenticatedSession > generateFirebaseSession"
+      );
       return res;
     })(),
   ]);

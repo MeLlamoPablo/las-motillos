@@ -25,6 +25,8 @@ jobs:
 
       - name: Build
         run: yarn go
+        env:
+          MAPBOX_TOKEN: ${{ secrets.MAPBOX_TOKEN }}
 
       - name: Deploy
         env:
