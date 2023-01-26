@@ -6,9 +6,11 @@ export function sortedByDistance<T extends { position: Point }>(
   input: readonly T[],
   reference: Point
 ): T[] {
-  return input.slice().sort((a, b) => {
-    const distanceToA = getDistance(reference, a.position);
-    const distanceToB = getDistance(reference, b.position);
-    return distanceToA - distanceToB;
-  });
+  return input
+    .map((element) => ({
+      element,
+      distance: getDistance(reference, element.position),
+    }))
+    .sort((a, b) => a.distance - b.distance)
+    .map(({ element }) => element);
 }
