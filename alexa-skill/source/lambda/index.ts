@@ -1,6 +1,4 @@
 import * as Alexa from "ask-sdk-core";
-import { DynamoDbPersistenceAdapter } from "ask-sdk-dynamodb-persistence-adapter";
-import { DynamoDB } from "aws-sdk";
 
 import { CancelAndStopIntentHandler } from "$/handlers/CancelAndStopIntentHandler";
 import { FallbackIntentHandler } from "$/handlers/FallbackIntentHandler";
@@ -34,14 +32,4 @@ export const handler = Alexa.SkillBuilders.custom()
     },
   })
   .withApiClient(new Alexa.DefaultApiClient())
-  .withPersistenceAdapter(
-    new DynamoDbPersistenceAdapter({
-      tableName: process.env["DYNAMODB_PERSISTENCE_TABLE_NAME"] ?? "",
-      createTable: false,
-      dynamoDBClient: new DynamoDB({
-        apiVersion: "2012-08-10",
-        region: process.env["DYNAMODB_PERSISTENCE_REGION"] ?? "",
-      }),
-    })
-  )
   .lambda();
