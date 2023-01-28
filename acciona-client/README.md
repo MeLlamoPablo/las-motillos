@@ -680,7 +680,15 @@ Example response:
 
 #### Parameters
 
-None
+* `skipCache - boolean? (default = false)`. By default, the data will be loaded
+  [from this repo's public cache][Regions-cache] to provide a fast response. To
+  load the data directly from Acciona's servers, set this option to true.
+
+  Acciona's servers are relatively slow (~600ms) and this endpoint changes
+  infrequently, so it is recommended to use the cache.
+
+  The cache is updated every hour, so if Acciona adds a new region or modifies
+  the area of existing regions, changes may take up to one hour to show up.
 
 #### Returns
 
@@ -755,7 +763,8 @@ If `success` is `false`, it will contain instead:
 [Acciona-movilidad]: https://movilidad.acciona.com/
 [Acciona-tos]: https://movilidad.acciona.com/es_ES/terminos-condiciones-uso-servicio/
 [Android-modified-web-view]: https://github.com/MeLlamoPablo/las-motillos/blob/4abd21f60a178a12d3b71474e74787df3cfd71cb/link-app-android/app/src/main/java/io/github/mellamopablo/lasmotillos/util/InterceptingClient.kt#L7-L27
-[Recaptcha]: https://www.google.com/recaptcha/about/
 [Recaptcha-docs]: https://developers.google.com/recaptcha/docs/v3
+[Recaptcha]: https://www.google.com/recaptcha/about/
+[Regions-cache]: https://raw.githubusercontent.com/MeLlamoPablo/las-motillos/master/acciona-client/assets/regions.json
 [Type-user]: https://github.com/MeLlamoPablo/las-motillos/blob/master/acciona-client/src/types/User.ts
 [Unix-time]: https://en.wikipedia.org/wiki/Unix_time

@@ -4,7 +4,7 @@ import { getPublicAccionaClient } from "../src";
 
 async function main() {
   const acciona = await getPublicAccionaClient();
-  const regions = await acciona.getRegions();
+  const regions = await acciona.getRegions({ skipCache: true });
 
   await writeFile(
     join(__dirname, "../assets/regions.json"),
