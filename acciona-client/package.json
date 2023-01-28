@@ -4,6 +4,7 @@
   "main": "src/index.ts",
   "private": true,
   "scripts": {
+    "cache-regions": "node -r esbuild-register ./scripts/cacheRegions.ts",
     "check": "tsc",
     "lint": "yarn prettier --write src/**/*.ts && yarn eslint",
     "lint:ci": "yarn prettier --check src/**/*.ts && yarn eslint:ci",
