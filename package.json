@@ -8,7 +8,8 @@
     "alexa-skill/source/lambda"
   ],
   "scripts": {
-    "go": "turbo run build check lint"
+    "go": "turbo run build check lint",
+    "go:ci": "turbo run build check lint:ci"
   },
   "devDependencies": {
     "@types/node": "^18.11.18",
