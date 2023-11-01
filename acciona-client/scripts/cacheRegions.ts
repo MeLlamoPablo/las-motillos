@@ -8,7 +8,7 @@ async function main() {
 
   await writeFile(
     join(__dirname, "../assets/regions.json"),
-    JSON.stringify(regions),
+    JSON.stringify(regions, null, "  "),
     "utf-8"
   );
 }
