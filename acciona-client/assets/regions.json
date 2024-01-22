@@ -17204,8 +17204,6 @@
       "L1"
     ],
     "vehicle_models": [
-      "automatic-trunk",
-      "lockable-trunk",
       "s02-2020"
     ]
   }
